@@ -1,0 +1,41 @@
+services:
+  todo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: App
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionString: Host=my_postgres;Database=todoapp;Port=5432;Username=postgres;Password=123456
+    ports:
+      - 8080:8080
+    depends_on:
+      - my_postgres
+
+  my_postgres:
+    image: postgres
+    container_name: Database
+    environment:
+      POSTGRES_DB: todoapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: pass
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+
+volumes:
+  postgresdata:
+  rabbitmqdata:
